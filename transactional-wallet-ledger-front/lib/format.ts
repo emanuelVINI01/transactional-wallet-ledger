@@ -1,0 +1,37 @@
+export function formatMoney(value?: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(value ?? 0);
+}
+
+export function formatDate(value?: string) {
+  if (!value) return "No activity yet";
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+export function maskEmail(email?: string) {
+  if (!email) return "hidden";
+  const [name, domain] = email.split("@");
+  if (!domain) return email;
+  return `${name.slice(0, 2)}***@${domain}`;
+}
+
+export function maskKey(key: string) {
+  if (key.length <= 8) return key;
+  return `${key.slice(0, 4)}...${key.slice(-4)}`;
+}
+
+export function makeIdempotencyKey() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+
+  return `idem_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+}

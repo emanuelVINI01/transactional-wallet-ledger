@@ -1,0 +1,43 @@
+{
+  "name": "transactional-wallet-ledger-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "test:e2e": "playwright test",
+    "start": "node dist/src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emanuelVINI01/transactional-wallet-ledger-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emanuelVINI01/transactional-wallet-ledger-api/issues"
+  },
+  "homepage": "https://github.com/emanuelVINI01/transactional-wallet-ledger-api#readme",
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.4.2",
+    "fastify": "^5.8.5",
+    "pg": "^8.20.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/bcrypt": "^6.0.0",
+    "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
+    "prisma": "^7.8.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  }
+}

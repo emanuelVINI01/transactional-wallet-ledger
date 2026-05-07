@@ -1,0 +1,70 @@
+.
+├── .codex
+├── .env
+├── .env.example
+├── .gitignore
+├── LICENSE
+├── package.json
+├── playwright.config.ts
+├── prisma
+│   ├── migrations
+│   │   ├── 20260507155513_users_transactions_sessions
+│   │   │   └── migration.sql
+│   │   └── migration_lock.toml
+│   └── schema.prisma
+├── prisma.config.ts
+├── project-tree.txt
+├── src
+│   ├── modules
+│   │   ├── auth.ts
+│   │   ├── payment-key.ts
+│   │   ├── payment.ts
+│   │   └── user.ts
+│   ├── plugins
+│   │   └── prisma.ts
+│   ├── schema
+│   │   ├── auth.schema.ts
+│   │   ├── payment-key.schema.ts
+│   │   ├── payment.schema.ts
+│   │   └── user.schema.ts
+│   ├── server.ts
+│   ├── services
+│   │   ├── auth.service.ts
+│   │   ├── balance.service.ts
+│   │   ├── payment-key.service.ts
+│   │   ├── payment.service.ts
+│   │   ├── session.service.ts
+│   │   ├── transaction.service.ts
+│   │   └── user.service.ts
+│   └── util
+│       └── parser-util.ts
+├── test-results
+│   └── .last-run.json
+├── tests
+│   └── e2e
+│       └── api.spec.ts
+├── transactional-wallet-ledger-front
+│   ├── AGENTS.md
+│   ├── app
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── CLAUDE.md
+│   ├── eslint.config.mjs
+│   ├── .gitignore
+│   ├── next.config.ts
+│   ├── next-env.d.ts
+│   ├── package.json
+│   ├── postcss.config.mjs
+│   ├── public
+│   │   ├── file.svg
+│   │   ├── globe.svg
+│   │   ├── next.svg
+│   │   ├── vercel.svg
+│   │   └── window.svg
+│   ├── README.md
+│   └── tsconfig.json
+└── tsconfig.json
+
+16 directories, 52 files
