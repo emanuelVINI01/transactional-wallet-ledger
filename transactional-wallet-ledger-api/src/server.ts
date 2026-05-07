@@ -5,6 +5,7 @@ import Fastify from "fastify";
 import { authRoutes } from "@/src/modules/auth";
 import { paymentRoutes } from "@/src/modules/payment";
 import { paymentKeyRoutes } from "@/src/modules/payment-key";
+import { transactionRoutes } from "@/src/modules/transaction";
 import { userRoutes } from "@/src/modules/user";
 
 export function buildApp() {
@@ -38,6 +39,10 @@ export function buildApp() {
 
   app.register(paymentRoutes, {
     prefix: "/payments",
+  });
+
+  app.register(transactionRoutes, {
+    prefix: "/transactions",
   });
 
   return app;

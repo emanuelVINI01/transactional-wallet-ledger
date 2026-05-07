@@ -5,16 +5,43 @@ import type { TransactionsQuerySchema } from "@/src/schema/user.schema";
 export const publicTransactionSelect = {
     id: true,
     userId: true,
+    payerId: true,
+    receiverId: true,
     amount: true,
     type: true,
     referenceId: true,
     description: true,
     createdAt: true,
+    payer: {
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            taxId: true,
+        },
+    },
+    receiver: {
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            taxId: true,
+        },
+    },
 } satisfies Prisma.TransactionSelect;
 
 export type PublicTransaction = Prisma.TransactionGetPayload<{
     select: typeof publicTransactionSelect;
 }>;
+
+export type PublicTransactionWithReceipt = PublicTransaction & {
+    receiptUrl?: string;
+};
+
+type TransferParties = {
+    payerId: string;
+    receiverId: string;
+};
 
 export async function createTransaction(
     userId: string,
@@ -22,11 +49,16 @@ export async function createTransaction(
     type: TransactionType,
     referenceId: string,
     description?: string,
-    tx: Prisma.TransactionClient = prisma
+    tx: Prisma.TransactionClient = prisma,
+    transferParties?: TransferParties,
 ) {
     return tx.transaction.create({
         data: {
             userId,
+            ...(transferParties ? {
+                payerId: transferParties.payerId,
+                receiverId: transferParties.receiverId,
+            } : {}),
             amount,
             type,
             referenceId,
@@ -38,7 +70,7 @@ export async function createTransaction(
 export async function findUserTransactions(
     userId: string,
     filters: TransactionsQuerySchema,
-): Promise<PublicTransaction[]> {
+): Promise<PublicTransactionWithReceipt[]> {
     const where: Prisma.TransactionWhereInput = {
         userId,
     };
@@ -48,33 +80,11 @@ export async function findUserTransactions(
             return [];
         }
 
-        const paidReferences = await prisma.transaction.findMany({
-            where: {
-                type: "CREDIT",
-                userId: {
-                    not: userId,
-                },
-                user: {
-                    taxId: {
-                        endsWith: filters.paidToTaxIdLast3,
-                    },
-                },
-            },
-            distinct: ["referenceId"],
-            select: {
-                referenceId: true,
-            },
-        });
-
-        const referenceIds = paidReferences.map(({ referenceId }) => referenceId);
-
-        if (referenceIds.length === 0) {
-            return [];
-        }
-
         where.type = "DEBIT";
-        where.referenceId = {
-            in: referenceIds,
+        where.receiver = {
+            taxId: {
+                endsWith: filters.paidToTaxIdLast3,
+            },
         };
     } else if (filters.type) {
         where.type = filters.type;
@@ -111,7 +121,7 @@ export async function findUserTransactions(
         };
     }
 
-    return prisma.transaction.findMany({
+    const transactions = await prisma.transaction.findMany({
         where,
         select: publicTransactionSelect,
         orderBy: {
@@ -120,4 +130,12 @@ export async function findUserTransactions(
         skip: (filters.page - 1) * filters.limit,
         take: filters.limit,
     });
+
+    return transactions.map((transaction) => transaction.type === "DEBIT" || (transaction.payer && transaction.receiver)
+        ? {
+            ...transaction,
+            receiptUrl: `/transactions/${transaction.id}/receipt`,
+        }
+        : transaction,
+    );
 }

@@ -1,8 +1,27 @@
-import { ArrowDownLeft, ArrowUpRight, ReceiptText } from "lucide-react";
-import type { ApiTransaction } from "@/lib/api-client";
+"use client";
+
+import { ArrowDownLeft, ArrowUpRight, Download, Loader2, ReceiptText } from "lucide-react";
+import { useState } from "react";
+import { ApiError, type ApiTransaction } from "@/lib/api-client";
 import { formatDate, formatMoney } from "@/lib/format";
+import { downloadReceiptPdf } from "@/lib/receipt";
 
 export function TransactionTable({ transactions }: { transactions: ApiTransaction[] }) {
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  async function downloadReceipt(transactionId: string) {
+    try {
+      setError(null);
+      setDownloadingId(transactionId);
+      await downloadReceiptPdf(transactionId);
+    } catch (downloadError) {
+      setError(downloadError instanceof ApiError ? downloadError.message : "Could not download receipt.");
+    } finally {
+      setDownloadingId(null);
+    }
+  }
+
   if (transactions.length === 0) {
     return (
       <div className="glass-surface-2 flex min-h-[280px] flex-col items-center justify-center rounded-3xl p-8 text-center">
@@ -18,6 +37,7 @@ export function TransactionTable({ transactions }: { transactions: ApiTransactio
       <div className="border-b border-white/[0.06] px-5 py-4">
         <h2 className="text-lg font-bold text-white">Ledger transactions</h2>
         <p className="mt-1 text-sm text-[#8892B0]">Debit and credit rows returned by the Fastify API.</p>
+        {error ? <p className="mt-2 text-sm text-[#FF86B2]">{error}</p> : null}
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[760px] text-left">
@@ -28,6 +48,7 @@ export function TransactionTable({ transactions }: { transactions: ApiTransactio
               <th className="px-5 py-3">Reference</th>
               <th className="px-5 py-3">Description</th>
               <th className="px-5 py-3">Created</th>
+              <th className="px-5 py-3">Receipt</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/[0.06]">
@@ -45,6 +66,20 @@ export function TransactionTable({ transactions }: { transactions: ApiTransactio
                   <td className="px-5 py-4 font-mono text-xs text-[#00E5FF]">{transaction.referenceId.slice(0, 12)}...</td>
                   <td className="px-5 py-4 text-[#AEB8CF]">{transaction.description ?? "No description"}</td>
                   <td className="px-5 py-4 text-[#8892B0]">{formatDate(transaction.createdAt)}</td>
+                  <td className="px-5 py-4">
+                    {transaction.receiptUrl ? (
+                      <button
+                        onClick={() => void downloadReceipt(transaction.id)}
+                        disabled={downloadingId === transaction.id}
+                        className="chip-btn inline-flex h-9 items-center gap-2 px-3 text-xs font-bold disabled:opacity-60"
+                      >
+                        {downloadingId === transaction.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
+                        PDF
+                      </button>
+                    ) : (
+                      <span className="text-xs text-[#8892B0]">-</span>
+                    )}
+                  </td>
                 </tr>
               );
             })}

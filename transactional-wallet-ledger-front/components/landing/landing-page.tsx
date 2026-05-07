@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Activity,
@@ -35,8 +36,8 @@ export function LandingPage() {
       <div className="grid-noise pointer-events-none absolute inset-0 opacity-70" />
       <nav className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-5 py-6">
         <Link href="/" className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7C3AED] via-[#FF2D75] to-[#00E5FF]">
-            <WalletCards className="h-5 w-5 text-white" />
+          <span className="relative h-12 w-12 overflow-hidden rounded-2xl border border-white/10 shadow-lg shadow-purple-950/40">
+            <Image src="/brand-logo.png" alt="Transactional Wallet Ledger logo" fill sizes="48px" className="object-cover" priority />
           </span>
           <span>
             <span className="block text-sm font-bold text-white">Transactional Wallet Ledger</span>

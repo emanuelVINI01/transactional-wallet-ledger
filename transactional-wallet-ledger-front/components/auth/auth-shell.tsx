@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { WalletCards } from "lucide-react";
+import Image from "next/image";
 
 export function AuthShell({
   children,
@@ -18,8 +18,8 @@ export function AuthShell({
       <section className="relative z-10 grid w-full max-w-6xl gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
         <div className="hidden lg:block">
           <Link href="/" className="mb-10 inline-flex items-center gap-3">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7C3AED] via-[#FF2D75] to-[#00E5FF]">
-              <WalletCards className="h-6 w-6 text-white" />
+            <span className="relative h-12 w-12 overflow-hidden rounded-2xl border border-white/10 shadow-lg shadow-purple-950/40">
+              <Image src="/brand-logo.png" alt="Transactional Wallet Ledger logo" fill sizes="48px" className="object-cover" />
             </span>
             <span className="font-bold text-white">Transactional Wallet Ledger</span>
           </Link>

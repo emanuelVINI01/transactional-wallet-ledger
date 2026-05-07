@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Activity, ArrowDownLeft, ArrowUpRight, Fingerprint, KeyRound, Plus, ReceiptText, ShieldCheck, WalletCards } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -12,7 +13,7 @@ import { StatCard } from "@/components/ui/stat-card";
 import { useRequireAuth } from "@/hooks/use-auth";
 import { useTransactions } from "@/hooks/use-transactions";
 import { useCreatePaymentKey, useWallet } from "@/hooks/use-wallet";
-import { formatDate, formatMoney } from "@/lib/format";
+import { formatDate, formatMoney, formatTaxId } from "@/lib/format";
 
 export default function DashboardPage() {
   const auth = useRequireAuth();
@@ -74,6 +75,7 @@ export default function DashboardPage() {
                   <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#FF2D75]">Wallet identity</p>
                   <h2 className="mt-2 text-2xl font-black text-white">{user?.name ?? "Loading user"}</h2>
                   <p className="mt-2 text-sm text-[#8892B0]">{user?.email ?? "Fetching authenticated profile..."}</p>
+                  <p className="mt-1 font-mono text-sm text-[#00E5FF]">{user?.taxId ? formatTaxId(user.taxId) : "000.000/00"}</p>
                 </div>
                 <span className="rounded-full bg-[#00FFA3]/10 px-3 py-1 text-xs font-bold text-[#00FFA3]">reconciled</span>
               </div>
@@ -113,6 +115,9 @@ export default function DashboardPage() {
               <button onClick={createPaymentKey} disabled={createKey.isPending} className="btn-cashout mt-4 h-12 w-full text-sm font-black disabled:opacity-60">
                 {createKey.isPending ? "Creating..." : "Generate payment key"}
               </button>
+              <Link href="/payment-keys" className="chip-btn mt-3 flex h-12 items-center justify-center text-sm font-bold">
+                View all keys
+              </Link>
               {createKey.error ? <p className="mt-3 text-sm text-[#FF86B2]">Could not create key. You may have reached the API limit.</p> : null}
             </div>
           </section>
@@ -137,7 +142,14 @@ export default function DashboardPage() {
           {transactionsQuery.isLoading ? (
             <div className="glass-surface-2 h-80 animate-pulse rounded-3xl" />
           ) : (
-            <TransactionTable transactions={transactions} />
+            <div className="space-y-3">
+              <div className="flex justify-end">
+                <Link href="/transactions" className="chip-btn inline-flex h-10 items-center px-4 text-sm font-bold">
+                  Open transactions page
+                </Link>
+              </div>
+              <TransactionTable transactions={transactions} />
+            </div>
           )}
         </main>
         <TransactionModal open={modalOpen} onClose={() => setModalOpen(false)} balance={user?.balance} />

@@ -1,6 +1,10 @@
 # Transactional Wallet Ledger Frontend
 
-Next.js portfolio client for the Fastify Transactional Wallet Ledger API. The UI is designed as a production-style fintech demo for recruiters: landing page, auth, protected dashboard, payment-key resolution and a two-step transfer modal.
+<img src="./public/brand-logo.png" alt="Transactional Wallet Ledger logo" width="140" />
+
+Next.js portfolio client for the Fastify Transactional Wallet Ledger API. The UI is designed as a production-style fintech demo for recruiters: landing page, auth, protected dashboard, payment-key management, receipt download, payment-key resolution and a two-step transfer modal.
+
+The logo in `public/brand-logo.png` was generated with AI for this portfolio demo. Prompt summary: dark/neon fintech logo mark combining wallet, ledger rows, transaction arrows and shield/check reliability cues, without embedded text.
 
 ## Run Locally
 
@@ -27,10 +31,12 @@ NEXT_PUBLIC_GITHUB_URL=https://github.com/emanuelVINI01
 - `POST /auth/login`
 - `GET /users/me`
 - `GET /users/transactions`
+- `GET /payment-keys`
 - `POST /payment-keys`
 - `GET /payment-keys/:key`
 - `DELETE /payment-keys/:key`
 - `POST /payments`
+- `GET /transactions/:id/receipt`
 
 ## Backend Wake-Up
 
@@ -64,6 +70,12 @@ The transfer modal is a two-step flow:
 
 The client generates an `Idempotency-Key` header for every new payment attempt. The current backend accepts the request without enforcing idempotency server-side yet, so the frontend keeps the integration isolated and visible as a TODO for the API layer.
 
+Debit transfers generate a styled PDF receipt in the backend `data/` directory. The filename is deterministic: `data/{transactionId}.pdf`. The dashboard downloads it through the authenticated API route `GET /transactions/:id/receipt`, so the Bearer token is still attached by the centralized API client.
+
+## Payment Keys
+
+The `/payment-keys` page lists all keys owned by the logged-in user, supports copy/delete actions and is protected by the same wake-up/auth flow as the dashboard. Tax IDs are displayed consistently as `000.000/00` across the UI.
+
 ## Deployment
 
 Suggested deployment split:
@@ -82,5 +94,7 @@ Configure `NEXT_PUBLIC_API_URL` in Vercel to the deployed Fastify API URL.
 - Protected dashboard with cache invalidation
 - Backend wake-up UX for free hosting
 - Ledger transaction metrics and history
+- Payment-key list with delete action
 - Payment-key resolution before transfer
+- Authenticated PDF receipt download for debit transfers
 - Mobile-first dark/neon product UI

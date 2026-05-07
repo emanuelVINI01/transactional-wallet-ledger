@@ -6,10 +6,19 @@ import {
     findPaymentKey,
     findUserByPaymentKey,
     generateKeyForUser,
+    listPaymentKeysForUser,
 } from "@/src/services/payment-key.service";
 import { parseOrReturnErrors } from "@/src/util/parser-util";
 
 export async function paymentKeyRoutes(app: FastifyInstance) {
+    app.get("/", async (request, reply) => {
+        return useSession(request, reply, async (session) => {
+            const paymentKeys = await listPaymentKeysForUser(session.user.id);
+
+            return reply.status(200).send({ paymentKeys });
+        });
+    });
+
     app.post("/", async (request, reply) => {
         return useSession(request, reply, async (session) => {
             const paymentKey = await generateKeyForUser(session.user.id);

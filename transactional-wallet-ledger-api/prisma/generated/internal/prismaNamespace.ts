@@ -780,6 +780,8 @@ export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeo
 export const TransactionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  payerId: 'payerId',
+  receiverId: 'receiverId',
   amount: 'amount',
   type: 'type',
   referenceId: 'referenceId',

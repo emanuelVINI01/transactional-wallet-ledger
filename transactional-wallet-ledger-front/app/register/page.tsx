@@ -11,11 +11,12 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { ApiWakeGate } from "@/components/layout/api-wake-gate";
 import { ApiError, endpoints } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
+import { formatTaxId, onlyDigits } from "@/lib/format";
 
 const registerFormSchema = z.object({
   name: z.string().min(3).max(50),
   email: z.email("Use a valid email").max(64),
-  taxId: z.string().regex(/^\d{8}$/, "Tax ID must contain exactly 8 digits"),
+  taxId: z.string().refine((value) => onlyDigits(value).length === 8, "Tax ID must contain exactly 8 digits"),
   password: z.string()
     .min(8)
     .max(128)
@@ -48,7 +49,7 @@ export default function RegisterPage() {
       await endpoints.register({
         name: values.name,
         email: values.email,
-        taxId: values.taxId,
+        taxId: onlyDigits(values.taxId),
         password: values.password,
       });
       await auth.login({ email: values.email, password: values.password });
@@ -92,7 +93,15 @@ export default function RegisterPage() {
           ] as const).map(([name, label, type]) => (
             <label key={name} className="block">
               <span className="mb-2 block text-sm font-semibold text-[#D8DFF0]">{label}</span>
-              <input className="input-neon h-12 px-4" type={type} inputMode={name === "taxId" ? "numeric" : undefined} {...form.register(name)} />
+              <input
+                className="input-neon h-12 px-4"
+                type={type}
+                inputMode={name === "taxId" ? "numeric" : undefined}
+                placeholder={name === "taxId" ? "000.000/00" : undefined}
+                {...form.register(name, name === "taxId" ? {
+                  onChange: (event) => form.setValue("taxId", formatTaxId(event.target.value), { shouldDirty: true, shouldValidate: true }),
+                } : undefined)}
+              />
               <span className="mt-1 block min-h-5 text-xs text-[#FF86B2]">{form.formState.errors[name]?.message}</span>
             </label>
           ))}

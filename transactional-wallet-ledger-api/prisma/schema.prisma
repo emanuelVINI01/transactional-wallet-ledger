@@ -25,7 +25,9 @@ model User {
   password    String
   balance     Int      @default(0)
   createdAt   DateTime @default(now())
-  transactions Transaction[]
+  transactions Transaction[] @relation("TransactionOwner")
+  paymentsSent Transaction[] @relation("TransactionPayer")
+  paymentsReceived Transaction[] @relation("TransactionReceiver")
   paymentKeys PaymentKey[] 
   sessions Session[]
 }
@@ -50,10 +52,14 @@ model Session {
 model Transaction {
   id        String   @unique @id @default(uuid())
   userId    String    
+  payerId   String?
+  receiverId String?
   amount    Int
   type      TransactionType
   referenceId String
   description String?
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation("TransactionOwner", fields: [userId], references: [id])
+  payer     User?    @relation("TransactionPayer", fields: [payerId], references: [id], onDelete: SetNull)
+  receiver  User?    @relation("TransactionReceiver", fields: [receiverId], references: [id], onDelete: SetNull)
 }

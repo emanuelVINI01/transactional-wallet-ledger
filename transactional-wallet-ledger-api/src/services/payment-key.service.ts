@@ -46,6 +46,20 @@ export async function generateKeyForUser(
     });
 }
 
+export async function listPaymentKeysForUser(
+    userId: string,
+) : Promise<PublicPaymentKey[]> {
+    return await prisma.paymentKey.findMany({
+        where: {
+            userId,
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+        select: publicPaymentKeySelect,
+    });
+}
+
 export async function findPaymentKey(
     key: string,
 ) : Promise<PublicPaymentKey | null> {

@@ -37,6 +37,8 @@ export type TransactionSumAggregateOutputType = {
 export type TransactionMinAggregateOutputType = {
   id: string | null
   userId: string | null
+  payerId: string | null
+  receiverId: string | null
   amount: number | null
   type: $Enums.TransactionType | null
   referenceId: string | null
@@ -47,6 +49,8 @@ export type TransactionMinAggregateOutputType = {
 export type TransactionMaxAggregateOutputType = {
   id: string | null
   userId: string | null
+  payerId: string | null
+  receiverId: string | null
   amount: number | null
   type: $Enums.TransactionType | null
   referenceId: string | null
@@ -57,6 +61,8 @@ export type TransactionMaxAggregateOutputType = {
 export type TransactionCountAggregateOutputType = {
   id: number
   userId: number
+  payerId: number
+  receiverId: number
   amount: number
   type: number
   referenceId: number
@@ -77,6 +83,8 @@ export type TransactionSumAggregateInputType = {
 export type TransactionMinAggregateInputType = {
   id?: true
   userId?: true
+  payerId?: true
+  receiverId?: true
   amount?: true
   type?: true
   referenceId?: true
@@ -87,6 +95,8 @@ export type TransactionMinAggregateInputType = {
 export type TransactionMaxAggregateInputType = {
   id?: true
   userId?: true
+  payerId?: true
+  receiverId?: true
   amount?: true
   type?: true
   referenceId?: true
@@ -97,6 +107,8 @@ export type TransactionMaxAggregateInputType = {
 export type TransactionCountAggregateInputType = {
   id?: true
   userId?: true
+  payerId?: true
+  receiverId?: true
   amount?: true
   type?: true
   referenceId?: true
@@ -194,6 +206,8 @@ export type TransactionGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 export type TransactionGroupByOutputType = {
   id: string
   userId: string
+  payerId: string | null
+  receiverId: string | null
   amount: number
   type: $Enums.TransactionType
   referenceId: string
@@ -227,23 +241,31 @@ export type TransactionWhereInput = {
   NOT?: Prisma.TransactionWhereInput | Prisma.TransactionWhereInput[]
   id?: Prisma.StringFilter<"Transaction"> | string
   userId?: Prisma.StringFilter<"Transaction"> | string
+  payerId?: Prisma.StringNullableFilter<"Transaction"> | string | null
+  receiverId?: Prisma.StringNullableFilter<"Transaction"> | string | null
   amount?: Prisma.IntFilter<"Transaction"> | number
   type?: Prisma.EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
   referenceId?: Prisma.StringFilter<"Transaction"> | string
   description?: Prisma.StringNullableFilter<"Transaction"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  payer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  receiver?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type TransactionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  payerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  receiverId?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
   type?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  payer?: Prisma.UserOrderByWithRelationInput
+  receiver?: Prisma.UserOrderByWithRelationInput
 }
 
 export type TransactionWhereUniqueInput = Prisma.AtLeast<{
@@ -252,17 +274,23 @@ export type TransactionWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.TransactionWhereInput[]
   NOT?: Prisma.TransactionWhereInput | Prisma.TransactionWhereInput[]
   userId?: Prisma.StringFilter<"Transaction"> | string
+  payerId?: Prisma.StringNullableFilter<"Transaction"> | string | null
+  receiverId?: Prisma.StringNullableFilter<"Transaction"> | string | null
   amount?: Prisma.IntFilter<"Transaction"> | number
   type?: Prisma.EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
   referenceId?: Prisma.StringFilter<"Transaction"> | string
   description?: Prisma.StringNullableFilter<"Transaction"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  payer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  receiver?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id" | "id">
 
 export type TransactionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  payerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  receiverId?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
   type?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
@@ -281,6 +309,8 @@ export type TransactionScalarWhereWithAggregatesInput = {
   NOT?: Prisma.TransactionScalarWhereWithAggregatesInput | Prisma.TransactionScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Transaction"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Transaction"> | string
+  payerId?: Prisma.StringNullableWithAggregatesFilter<"Transaction"> | string | null
+  receiverId?: Prisma.StringNullableWithAggregatesFilter<"Transaction"> | string | null
   amount?: Prisma.IntWithAggregatesFilter<"Transaction"> | number
   type?: Prisma.EnumTransactionTypeWithAggregatesFilter<"Transaction"> | $Enums.TransactionType
   referenceId?: Prisma.StringWithAggregatesFilter<"Transaction"> | string
@@ -296,11 +326,15 @@ export type TransactionCreateInput = {
   description?: string | null
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTransactionsInput
+  payer?: Prisma.UserCreateNestedOneWithoutPaymentsSentInput
+  receiver?: Prisma.UserCreateNestedOneWithoutPaymentsReceivedInput
 }
 
 export type TransactionUncheckedCreateInput = {
   id?: string
   userId: string
+  payerId?: string | null
+  receiverId?: string | null
   amount: number
   type: $Enums.TransactionType
   referenceId: string
@@ -316,11 +350,15 @@ export type TransactionUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTransactionsNestedInput
+  payer?: Prisma.UserUpdateOneWithoutPaymentsSentNestedInput
+  receiver?: Prisma.UserUpdateOneWithoutPaymentsReceivedNestedInput
 }
 
 export type TransactionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  payerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receiverId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -331,6 +369,8 @@ export type TransactionUncheckedUpdateInput = {
 export type TransactionCreateManyInput = {
   id?: string
   userId: string
+  payerId?: string | null
+  receiverId?: string | null
   amount: number
   type: $Enums.TransactionType
   referenceId: string
@@ -350,6 +390,8 @@ export type TransactionUpdateManyMutationInput = {
 export type TransactionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  payerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receiverId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -370,6 +412,8 @@ export type TransactionOrderByRelationAggregateInput = {
 export type TransactionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  payerId?: Prisma.SortOrder
+  receiverId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   type?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
@@ -384,6 +428,8 @@ export type TransactionAvgOrderByAggregateInput = {
 export type TransactionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  payerId?: Prisma.SortOrder
+  receiverId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   type?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
@@ -394,6 +440,8 @@ export type TransactionMaxOrderByAggregateInput = {
 export type TransactionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  payerId?: Prisma.SortOrder
+  receiverId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   type?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
@@ -412,10 +460,38 @@ export type TransactionCreateNestedManyWithoutUserInput = {
   connect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
 }
 
+export type TransactionCreateNestedManyWithoutPayerInput = {
+  create?: Prisma.XOR<Prisma.TransactionCreateWithoutPayerInput, Prisma.TransactionUncheckedCreateWithoutPayerInput> | Prisma.TransactionCreateWithoutPayerInput[] | Prisma.TransactionUncheckedCreateWithoutPayerInput[]
+  connectOrCreate?: Prisma.TransactionCreateOrConnectWithoutPayerInput | Prisma.TransactionCreateOrConnectWithoutPayerInput[]
+  createMany?: Prisma.TransactionCreateManyPayerInputEnvelope
+  connect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+}
+
+export type TransactionCreateNestedManyWithoutReceiverInput = {
+  create?: Prisma.XOR<Prisma.TransactionCreateWithoutReceiverInput, Prisma.TransactionUncheckedCreateWithoutReceiverInput> | Prisma.TransactionCreateWithoutReceiverInput[] | Prisma.TransactionUncheckedCreateWithoutReceiverInput[]
+  connectOrCreate?: Prisma.TransactionCreateOrConnectWithoutReceiverInput | Prisma.TransactionCreateOrConnectWithoutReceiverInput[]
+  createMany?: Prisma.TransactionCreateManyReceiverInputEnvelope
+  connect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+}
+
 export type TransactionUncheckedCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.TransactionCreateWithoutUserInput, Prisma.TransactionUncheckedCreateWithoutUserInput> | Prisma.TransactionCreateWithoutUserInput[] | Prisma.TransactionUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.TransactionCreateOrConnectWithoutUserInput | Prisma.TransactionCreateOrConnectWithoutUserInput[]
   createMany?: Prisma.TransactionCreateManyUserInputEnvelope
+  connect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+}
+
+export type TransactionUncheckedCreateNestedManyWithoutPayerInput = {
+  create?: Prisma.XOR<Prisma.TransactionCreateWithoutPayerInput, Prisma.TransactionUncheckedCreateWithoutPayerInput> | Prisma.TransactionCreateWithoutPayerInput[] | Prisma.TransactionUncheckedCreateWithoutPayerInput[]
+  connectOrCreate?: Prisma.TransactionCreateOrConnectWithoutPayerInput | Prisma.TransactionCreateOrConnectWithoutPayerInput[]
+  createMany?: Prisma.TransactionCreateManyPayerInputEnvelope
+  connect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+}
+
+export type TransactionUncheckedCreateNestedManyWithoutReceiverInput = {
+  create?: Prisma.XOR<Prisma.TransactionCreateWithoutReceiverInput, Prisma.TransactionUncheckedCreateWithoutReceiverInput> | Prisma.TransactionCreateWithoutReceiverInput[] | Prisma.TransactionUncheckedCreateWithoutReceiverInput[]
+  connectOrCreate?: Prisma.TransactionCreateOrConnectWithoutReceiverInput | Prisma.TransactionCreateOrConnectWithoutReceiverInput[]
+  createMany?: Prisma.TransactionCreateManyReceiverInputEnvelope
   connect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
 }
 
@@ -433,6 +509,34 @@ export type TransactionUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.TransactionScalarWhereInput | Prisma.TransactionScalarWhereInput[]
 }
 
+export type TransactionUpdateManyWithoutPayerNestedInput = {
+  create?: Prisma.XOR<Prisma.TransactionCreateWithoutPayerInput, Prisma.TransactionUncheckedCreateWithoutPayerInput> | Prisma.TransactionCreateWithoutPayerInput[] | Prisma.TransactionUncheckedCreateWithoutPayerInput[]
+  connectOrCreate?: Prisma.TransactionCreateOrConnectWithoutPayerInput | Prisma.TransactionCreateOrConnectWithoutPayerInput[]
+  upsert?: Prisma.TransactionUpsertWithWhereUniqueWithoutPayerInput | Prisma.TransactionUpsertWithWhereUniqueWithoutPayerInput[]
+  createMany?: Prisma.TransactionCreateManyPayerInputEnvelope
+  set?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  disconnect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  delete?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  connect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  update?: Prisma.TransactionUpdateWithWhereUniqueWithoutPayerInput | Prisma.TransactionUpdateWithWhereUniqueWithoutPayerInput[]
+  updateMany?: Prisma.TransactionUpdateManyWithWhereWithoutPayerInput | Prisma.TransactionUpdateManyWithWhereWithoutPayerInput[]
+  deleteMany?: Prisma.TransactionScalarWhereInput | Prisma.TransactionScalarWhereInput[]
+}
+
+export type TransactionUpdateManyWithoutReceiverNestedInput = {
+  create?: Prisma.XOR<Prisma.TransactionCreateWithoutReceiverInput, Prisma.TransactionUncheckedCreateWithoutReceiverInput> | Prisma.TransactionCreateWithoutReceiverInput[] | Prisma.TransactionUncheckedCreateWithoutReceiverInput[]
+  connectOrCreate?: Prisma.TransactionCreateOrConnectWithoutReceiverInput | Prisma.TransactionCreateOrConnectWithoutReceiverInput[]
+  upsert?: Prisma.TransactionUpsertWithWhereUniqueWithoutReceiverInput | Prisma.TransactionUpsertWithWhereUniqueWithoutReceiverInput[]
+  createMany?: Prisma.TransactionCreateManyReceiverInputEnvelope
+  set?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  disconnect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  delete?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  connect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  update?: Prisma.TransactionUpdateWithWhereUniqueWithoutReceiverInput | Prisma.TransactionUpdateWithWhereUniqueWithoutReceiverInput[]
+  updateMany?: Prisma.TransactionUpdateManyWithWhereWithoutReceiverInput | Prisma.TransactionUpdateManyWithWhereWithoutReceiverInput[]
+  deleteMany?: Prisma.TransactionScalarWhereInput | Prisma.TransactionScalarWhereInput[]
+}
+
 export type TransactionUncheckedUpdateManyWithoutUserNestedInput = {
   create?: Prisma.XOR<Prisma.TransactionCreateWithoutUserInput, Prisma.TransactionUncheckedCreateWithoutUserInput> | Prisma.TransactionCreateWithoutUserInput[] | Prisma.TransactionUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.TransactionCreateOrConnectWithoutUserInput | Prisma.TransactionCreateOrConnectWithoutUserInput[]
@@ -444,6 +548,34 @@ export type TransactionUncheckedUpdateManyWithoutUserNestedInput = {
   connect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
   update?: Prisma.TransactionUpdateWithWhereUniqueWithoutUserInput | Prisma.TransactionUpdateWithWhereUniqueWithoutUserInput[]
   updateMany?: Prisma.TransactionUpdateManyWithWhereWithoutUserInput | Prisma.TransactionUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.TransactionScalarWhereInput | Prisma.TransactionScalarWhereInput[]
+}
+
+export type TransactionUncheckedUpdateManyWithoutPayerNestedInput = {
+  create?: Prisma.XOR<Prisma.TransactionCreateWithoutPayerInput, Prisma.TransactionUncheckedCreateWithoutPayerInput> | Prisma.TransactionCreateWithoutPayerInput[] | Prisma.TransactionUncheckedCreateWithoutPayerInput[]
+  connectOrCreate?: Prisma.TransactionCreateOrConnectWithoutPayerInput | Prisma.TransactionCreateOrConnectWithoutPayerInput[]
+  upsert?: Prisma.TransactionUpsertWithWhereUniqueWithoutPayerInput | Prisma.TransactionUpsertWithWhereUniqueWithoutPayerInput[]
+  createMany?: Prisma.TransactionCreateManyPayerInputEnvelope
+  set?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  disconnect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  delete?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  connect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  update?: Prisma.TransactionUpdateWithWhereUniqueWithoutPayerInput | Prisma.TransactionUpdateWithWhereUniqueWithoutPayerInput[]
+  updateMany?: Prisma.TransactionUpdateManyWithWhereWithoutPayerInput | Prisma.TransactionUpdateManyWithWhereWithoutPayerInput[]
+  deleteMany?: Prisma.TransactionScalarWhereInput | Prisma.TransactionScalarWhereInput[]
+}
+
+export type TransactionUncheckedUpdateManyWithoutReceiverNestedInput = {
+  create?: Prisma.XOR<Prisma.TransactionCreateWithoutReceiverInput, Prisma.TransactionUncheckedCreateWithoutReceiverInput> | Prisma.TransactionCreateWithoutReceiverInput[] | Prisma.TransactionUncheckedCreateWithoutReceiverInput[]
+  connectOrCreate?: Prisma.TransactionCreateOrConnectWithoutReceiverInput | Prisma.TransactionCreateOrConnectWithoutReceiverInput[]
+  upsert?: Prisma.TransactionUpsertWithWhereUniqueWithoutReceiverInput | Prisma.TransactionUpsertWithWhereUniqueWithoutReceiverInput[]
+  createMany?: Prisma.TransactionCreateManyReceiverInputEnvelope
+  set?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  disconnect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  delete?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  connect?: Prisma.TransactionWhereUniqueInput | Prisma.TransactionWhereUniqueInput[]
+  update?: Prisma.TransactionUpdateWithWhereUniqueWithoutReceiverInput | Prisma.TransactionUpdateWithWhereUniqueWithoutReceiverInput[]
+  updateMany?: Prisma.TransactionUpdateManyWithWhereWithoutReceiverInput | Prisma.TransactionUpdateManyWithWhereWithoutReceiverInput[]
   deleteMany?: Prisma.TransactionScalarWhereInput | Prisma.TransactionScalarWhereInput[]
 }
 
@@ -462,10 +594,14 @@ export type TransactionCreateWithoutUserInput = {
   referenceId: string
   description?: string | null
   createdAt?: Date | string
+  payer?: Prisma.UserCreateNestedOneWithoutPaymentsSentInput
+  receiver?: Prisma.UserCreateNestedOneWithoutPaymentsReceivedInput
 }
 
 export type TransactionUncheckedCreateWithoutUserInput = {
   id?: string
+  payerId?: string | null
+  receiverId?: string | null
   amount: number
   type: $Enums.TransactionType
   referenceId: string
@@ -480,6 +616,70 @@ export type TransactionCreateOrConnectWithoutUserInput = {
 
 export type TransactionCreateManyUserInputEnvelope = {
   data: Prisma.TransactionCreateManyUserInput | Prisma.TransactionCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type TransactionCreateWithoutPayerInput = {
+  id?: string
+  amount: number
+  type: $Enums.TransactionType
+  referenceId: string
+  description?: string | null
+  createdAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutTransactionsInput
+  receiver?: Prisma.UserCreateNestedOneWithoutPaymentsReceivedInput
+}
+
+export type TransactionUncheckedCreateWithoutPayerInput = {
+  id?: string
+  userId: string
+  receiverId?: string | null
+  amount: number
+  type: $Enums.TransactionType
+  referenceId: string
+  description?: string | null
+  createdAt?: Date | string
+}
+
+export type TransactionCreateOrConnectWithoutPayerInput = {
+  where: Prisma.TransactionWhereUniqueInput
+  create: Prisma.XOR<Prisma.TransactionCreateWithoutPayerInput, Prisma.TransactionUncheckedCreateWithoutPayerInput>
+}
+
+export type TransactionCreateManyPayerInputEnvelope = {
+  data: Prisma.TransactionCreateManyPayerInput | Prisma.TransactionCreateManyPayerInput[]
+  skipDuplicates?: boolean
+}
+
+export type TransactionCreateWithoutReceiverInput = {
+  id?: string
+  amount: number
+  type: $Enums.TransactionType
+  referenceId: string
+  description?: string | null
+  createdAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutTransactionsInput
+  payer?: Prisma.UserCreateNestedOneWithoutPaymentsSentInput
+}
+
+export type TransactionUncheckedCreateWithoutReceiverInput = {
+  id?: string
+  userId: string
+  payerId?: string | null
+  amount: number
+  type: $Enums.TransactionType
+  referenceId: string
+  description?: string | null
+  createdAt?: Date | string
+}
+
+export type TransactionCreateOrConnectWithoutReceiverInput = {
+  where: Prisma.TransactionWhereUniqueInput
+  create: Prisma.XOR<Prisma.TransactionCreateWithoutReceiverInput, Prisma.TransactionUncheckedCreateWithoutReceiverInput>
+}
+
+export type TransactionCreateManyReceiverInputEnvelope = {
+  data: Prisma.TransactionCreateManyReceiverInput | Prisma.TransactionCreateManyReceiverInput[]
   skipDuplicates?: boolean
 }
 
@@ -505,6 +705,8 @@ export type TransactionScalarWhereInput = {
   NOT?: Prisma.TransactionScalarWhereInput | Prisma.TransactionScalarWhereInput[]
   id?: Prisma.StringFilter<"Transaction"> | string
   userId?: Prisma.StringFilter<"Transaction"> | string
+  payerId?: Prisma.StringNullableFilter<"Transaction"> | string | null
+  receiverId?: Prisma.StringNullableFilter<"Transaction"> | string | null
   amount?: Prisma.IntFilter<"Transaction"> | number
   type?: Prisma.EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
   referenceId?: Prisma.StringFilter<"Transaction"> | string
@@ -512,8 +714,64 @@ export type TransactionScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
 }
 
+export type TransactionUpsertWithWhereUniqueWithoutPayerInput = {
+  where: Prisma.TransactionWhereUniqueInput
+  update: Prisma.XOR<Prisma.TransactionUpdateWithoutPayerInput, Prisma.TransactionUncheckedUpdateWithoutPayerInput>
+  create: Prisma.XOR<Prisma.TransactionCreateWithoutPayerInput, Prisma.TransactionUncheckedCreateWithoutPayerInput>
+}
+
+export type TransactionUpdateWithWhereUniqueWithoutPayerInput = {
+  where: Prisma.TransactionWhereUniqueInput
+  data: Prisma.XOR<Prisma.TransactionUpdateWithoutPayerInput, Prisma.TransactionUncheckedUpdateWithoutPayerInput>
+}
+
+export type TransactionUpdateManyWithWhereWithoutPayerInput = {
+  where: Prisma.TransactionScalarWhereInput
+  data: Prisma.XOR<Prisma.TransactionUpdateManyMutationInput, Prisma.TransactionUncheckedUpdateManyWithoutPayerInput>
+}
+
+export type TransactionUpsertWithWhereUniqueWithoutReceiverInput = {
+  where: Prisma.TransactionWhereUniqueInput
+  update: Prisma.XOR<Prisma.TransactionUpdateWithoutReceiverInput, Prisma.TransactionUncheckedUpdateWithoutReceiverInput>
+  create: Prisma.XOR<Prisma.TransactionCreateWithoutReceiverInput, Prisma.TransactionUncheckedCreateWithoutReceiverInput>
+}
+
+export type TransactionUpdateWithWhereUniqueWithoutReceiverInput = {
+  where: Prisma.TransactionWhereUniqueInput
+  data: Prisma.XOR<Prisma.TransactionUpdateWithoutReceiverInput, Prisma.TransactionUncheckedUpdateWithoutReceiverInput>
+}
+
+export type TransactionUpdateManyWithWhereWithoutReceiverInput = {
+  where: Prisma.TransactionScalarWhereInput
+  data: Prisma.XOR<Prisma.TransactionUpdateManyMutationInput, Prisma.TransactionUncheckedUpdateManyWithoutReceiverInput>
+}
+
 export type TransactionCreateManyUserInput = {
   id?: string
+  payerId?: string | null
+  receiverId?: string | null
+  amount: number
+  type: $Enums.TransactionType
+  referenceId: string
+  description?: string | null
+  createdAt?: Date | string
+}
+
+export type TransactionCreateManyPayerInput = {
+  id?: string
+  userId: string
+  receiverId?: string | null
+  amount: number
+  type: $Enums.TransactionType
+  referenceId: string
+  description?: string | null
+  createdAt?: Date | string
+}
+
+export type TransactionCreateManyReceiverInput = {
+  id?: string
+  userId: string
+  payerId?: string | null
   amount: number
   type: $Enums.TransactionType
   referenceId: string
@@ -528,10 +786,14 @@ export type TransactionUpdateWithoutUserInput = {
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payer?: Prisma.UserUpdateOneWithoutPaymentsSentNestedInput
+  receiver?: Prisma.UserUpdateOneWithoutPaymentsReceivedNestedInput
 }
 
 export type TransactionUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  payerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receiverId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -541,6 +803,74 @@ export type TransactionUncheckedUpdateWithoutUserInput = {
 
 export type TransactionUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  payerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receiverId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TransactionUpdateWithoutPayerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutTransactionsNestedInput
+  receiver?: Prisma.UserUpdateOneWithoutPaymentsReceivedNestedInput
+}
+
+export type TransactionUncheckedUpdateWithoutPayerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  receiverId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TransactionUncheckedUpdateManyWithoutPayerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  receiverId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TransactionUpdateWithoutReceiverInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutTransactionsNestedInput
+  payer?: Prisma.UserUpdateOneWithoutPaymentsSentNestedInput
+}
+
+export type TransactionUncheckedUpdateWithoutReceiverInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  payerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TransactionUncheckedUpdateManyWithoutReceiverInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  payerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -553,39 +883,53 @@ export type TransactionUncheckedUpdateManyWithoutUserInput = {
 export type TransactionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  payerId?: boolean
+  receiverId?: boolean
   amount?: boolean
   type?: boolean
   referenceId?: boolean
   description?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  payer?: boolean | Prisma.Transaction$payerArgs<ExtArgs>
+  receiver?: boolean | Prisma.Transaction$receiverArgs<ExtArgs>
 }, ExtArgs["result"]["transaction"]>
 
 export type TransactionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  payerId?: boolean
+  receiverId?: boolean
   amount?: boolean
   type?: boolean
   referenceId?: boolean
   description?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  payer?: boolean | Prisma.Transaction$payerArgs<ExtArgs>
+  receiver?: boolean | Prisma.Transaction$receiverArgs<ExtArgs>
 }, ExtArgs["result"]["transaction"]>
 
 export type TransactionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  payerId?: boolean
+  receiverId?: boolean
   amount?: boolean
   type?: boolean
   referenceId?: boolean
   description?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  payer?: boolean | Prisma.Transaction$payerArgs<ExtArgs>
+  receiver?: boolean | Prisma.Transaction$receiverArgs<ExtArgs>
 }, ExtArgs["result"]["transaction"]>
 
 export type TransactionSelectScalar = {
   id?: boolean
   userId?: boolean
+  payerId?: boolean
+  receiverId?: boolean
   amount?: boolean
   type?: boolean
   referenceId?: boolean
@@ -593,25 +937,35 @@ export type TransactionSelectScalar = {
   createdAt?: boolean
 }
 
-export type TransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "amount" | "type" | "referenceId" | "description" | "createdAt", ExtArgs["result"]["transaction"]>
+export type TransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "payerId" | "receiverId" | "amount" | "type" | "referenceId" | "description" | "createdAt", ExtArgs["result"]["transaction"]>
 export type TransactionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  payer?: boolean | Prisma.Transaction$payerArgs<ExtArgs>
+  receiver?: boolean | Prisma.Transaction$receiverArgs<ExtArgs>
 }
 export type TransactionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  payer?: boolean | Prisma.Transaction$payerArgs<ExtArgs>
+  receiver?: boolean | Prisma.Transaction$receiverArgs<ExtArgs>
 }
 export type TransactionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  payer?: boolean | Prisma.Transaction$payerArgs<ExtArgs>
+  receiver?: boolean | Prisma.Transaction$receiverArgs<ExtArgs>
 }
 
 export type $TransactionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Transaction"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    payer: Prisma.$UserPayload<ExtArgs> | null
+    receiver: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
+    payerId: string | null
+    receiverId: string | null
     amount: number
     type: $Enums.TransactionType
     referenceId: string
@@ -1012,6 +1366,8 @@ readonly fields: TransactionFieldRefs;
 export interface Prisma__TransactionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  payer<T extends Prisma.Transaction$payerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Transaction$payerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  receiver<T extends Prisma.Transaction$receiverArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Transaction$receiverArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1043,6 +1399,8 @@ export interface Prisma__TransactionClient<T, Null = never, ExtArgs extends runt
 export interface TransactionFieldRefs {
   readonly id: Prisma.FieldRef<"Transaction", 'String'>
   readonly userId: Prisma.FieldRef<"Transaction", 'String'>
+  readonly payerId: Prisma.FieldRef<"Transaction", 'String'>
+  readonly receiverId: Prisma.FieldRef<"Transaction", 'String'>
   readonly amount: Prisma.FieldRef<"Transaction", 'Int'>
   readonly type: Prisma.FieldRef<"Transaction", 'TransactionType'>
   readonly referenceId: Prisma.FieldRef<"Transaction", 'String'>
@@ -1446,6 +1804,44 @@ export type TransactionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many Transactions to delete.
    */
   limit?: number
+}
+
+/**
+ * Transaction.payer
+ */
+export type Transaction$payerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * Transaction.receiver
+ */
+export type Transaction$receiverArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

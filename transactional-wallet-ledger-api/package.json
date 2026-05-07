@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
+    "admin:deposit": "tsx src/scripts/admin-deposit.ts",
     "build": "tsc",
     "test:e2e": "playwright test",
     "start": "node dist/src/server.js"
@@ -28,6 +29,7 @@
     "bcrypt": "^6.0.0",
     "dotenv": "^17.4.2",
     "fastify": "^5.8.5",
+    "pdfkit": "^0.18.0",
     "pg": "^8.20.0",
     "zod": "^4.4.3"
   },
@@ -35,6 +37,7 @@
     "@playwright/test": "^1.59.1",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^25.6.0",
+    "@types/pdfkit": "^0.17.6",
     "@types/pg": "^8.20.0",
     "prisma": "^7.8.0",
     "tsx": "^4.21.0",

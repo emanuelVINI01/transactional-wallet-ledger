@@ -24,6 +24,29 @@ export function useCreatePaymentKey() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["me"] });
+      void queryClient.invalidateQueries({ queryKey: ["payment-keys"] });
+    },
+  });
+}
+
+export function usePaymentKeys(enabled = true) {
+  return useQuery({
+    queryKey: ["payment-keys"],
+    queryFn: async () => {
+      const response = await endpoints.paymentKeys();
+      return response.paymentKeys;
+    },
+    enabled,
+  });
+}
+
+export function useDeletePaymentKey() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: endpoints.deletePaymentKey,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["payment-keys"] });
     },
   });
 }

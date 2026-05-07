@@ -16,6 +16,17 @@ export function formatDate(value?: string) {
   }).format(new Date(value));
 }
 
+export function onlyDigits(value?: string) {
+  return (value ?? "").replace(/\D/g, "");
+}
+
+export function formatTaxId(value?: string) {
+  const digits = onlyDigits(value).slice(0, 8);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
+  return `${digits.slice(0, 3)}.${digits.slice(3, 6)}/${digits.slice(6, 8)}`;
+}
+
 export function maskEmail(email?: string) {
   if (!email) return "hidden";
   const [name, domain] = email.split("@");

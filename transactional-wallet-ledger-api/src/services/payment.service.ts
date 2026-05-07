@@ -1,5 +1,6 @@
 import { prisma } from "@/src/plugins/prisma";
 import { checkAndDebitValue, creditValue } from "@/src/services/balance.service";
+import { generatePaymentReceipt, type PaymentReceiptData } from "@/src/services/receipt.service";
 import { createTransaction } from "./transaction.service";
 
 
@@ -7,7 +8,18 @@ export interface PaymentResult {
     success: boolean;
     error?: string;
     transactionId?: string;
+    receiptUrl?: string;
 }
+
+type PaymentTransactionResult = (
+    | { success: false; error: string }
+    | {
+        success: true;
+        transactionId: string;
+        debitReceiptData: PaymentReceiptData;
+        creditReceiptData: PaymentReceiptData;
+    }
+);
 
 export async function payTo(
     userId: string,
@@ -16,7 +28,7 @@ export async function payTo(
     reference: string,
     description?: string,
 ) : Promise<PaymentResult> {
-    const result = await prisma.$transaction(async (tx) => {
+    const result: PaymentTransactionResult = await prisma.$transaction(async (tx) => {
         const paymentKey = await tx.paymentKey.findUnique({
             where: {
                 id: paymentKeyId,
@@ -25,6 +37,9 @@ export async function payTo(
                 user: {
                     select: {
                         id: true,
+                        name: true,
+                        email: true,
+                        taxId: true,
                     },
                 },
             },
@@ -37,6 +52,24 @@ export async function payTo(
             };
         }
         const targetId = paymentKey.user.id;
+        const payer = await tx.user.findUnique({
+            where: {
+                id: userId,
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                taxId: true,
+            },
+        });
+
+        if (!payer) {
+            return {
+                success: false,
+                error: "Payer not found",
+            };
+        }
 
         if (targetId === userId) {
             return {
@@ -65,6 +98,10 @@ export async function payTo(
             reference,
             description,
             tx,
+            {
+                payerId: payer.id,
+                receiverId: targetId,
+            },
         );
 
         if (!transaction) {
@@ -80,6 +117,10 @@ export async function payTo(
             reference,
             description,
             tx,
+            {
+                payerId: payer.id,
+                receiverId: targetId,
+            },
         );
 
         if (!creditTransaction) {
@@ -89,8 +130,37 @@ export async function payTo(
         return {
             success: true,
             transactionId: transaction.id,
+            debitReceiptData: {
+                transactionId: transaction.id,
+                referenceId: reference,
+                amount,
+                createdAt: transaction.createdAt,
+                payer,
+                receiver: paymentKey.user,
+                ...(description ? { description } : {}),
+            },
+            creditReceiptData: {
+                transactionId: creditTransaction.id,
+                referenceId: reference,
+                amount,
+                createdAt: creditTransaction.createdAt,
+                payer,
+                receiver: paymentKey.user,
+                ...(description ? { description } : {}),
+            },
         };
     });
 
-    return result;
+    if (!result.success) {
+        return result;
+    }
+
+    await generatePaymentReceipt(result.debitReceiptData);
+    await generatePaymentReceipt(result.creditReceiptData);
+
+    return {
+        success: true,
+        transactionId: result.transactionId,
+        receiptUrl: `/transactions/${result.transactionId}/receipt`,
+    };
 }
