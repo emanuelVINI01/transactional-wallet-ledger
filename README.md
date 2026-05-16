@@ -11,7 +11,7 @@ API e dashboard para carteira transacional com ledger auditável.
 
 ## Stack identificada
 
-JavaScript, KSP, Ledger, Redis, Transactions, TypeScript
+JavaScript, Ledger, Redis, Transactions, TypeScript
 
 ## Decisões de engenharia
 
