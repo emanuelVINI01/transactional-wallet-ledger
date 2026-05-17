@@ -149,3 +149,4 @@ vite.config.ts.timestamp-*
 # Generated transfer receipts
 transactional-wallet-ledger-api/data/*.pdf
 !transactional-wallet-ledger-api/data/.gitkeep
+.aider*

@@ -1,29 +1,149 @@
-# transactional-wallet-ledger
+# Transactional Wallet Ledger
 
-API e dashboard para carteira transacional com ledger auditável.
+Transactional Wallet Ledger is a single Next.js application for a mobile-first fintech ledger demo. The UI, authentication, API route handlers, Prisma data layer and receipt generation now live in the repository root, so the project can be deployed to Vercel as one app.
 
-## Leitura arquitetural
+## Short Description
 
-- Monorepo com backend Fastify e dashboard Next.js.
-- Foco em consistência ACID, rastreabilidade de débito/crédito e contratos validados por Zod.
-- Uso de Prisma/PostgreSQL para persistência transacional e Playwright na camada de verificação quando presente.
-- A estrutura do repositório foi lida como evidência principal; este README evita prometer features que não aparecem no código ou no contexto técnico consolidado do portfólio.
+Mobile-first Dracula wallet ledger built with Next.js, Auth.js v5, JWT sessions, Prisma, PostgreSQL, TanStack Query, Framer Motion and Tailwind CSS. It demonstrates credential authentication, protected local API routes, wallet balances, payment keys, ledger transactions, idempotent transfer references and authenticated PDF receipts.
 
-## Stack identificada
+## Features
 
-JavaScript, Ledger, Redis, Transactions, TypeScript
+- Auth.js v5 Credentials provider with JWT sessions.
+- Server-side `AUTH_SECRET` support for encrypted Auth.js session tokens.
+- Local Next.js API route handlers under `app/api`.
+- Prisma/PostgreSQL models for users, payment keys and transactions.
+- Register and login flows with password hashing through `bcryptjs`.
+- Protected dashboard with balance, sent, received, total transactions and last movement.
+- Payment key generation, listing, copy and deletion.
+- Two-step transfer modal with payment-key resolution and confirmation.
+- Idempotency key sent from the UI and stored as the transaction reference.
+- Debit and credit ledger rows created inside a Prisma transaction.
+- Authenticated PDF receipt endpoint for debit transactions.
+- Mobile bottom navigation, responsive modals and responsive tables.
+- Dracula theme, glass panels, Framer Motion transitions and charted ledger activity.
 
-## Decisões de engenharia
+## Tech Stack
 
-- Separação explícita entre interface, regras de domínio e persistência sempre que a estrutura do projeto permite.
-- Validação de entrada e contratos de API são tratados como fronteira de segurança, não como detalhe de UI.
-- Persistência e autenticação são documentadas como partes críticas do sistema quando aparecem no stack.
-- O projeto prioriza fundamentos verificáveis: modelagem de dados, fluxo operacional claro e manutenção pragmática.
+- Next.js 16 App Router
+- React 19
+- TypeScript
+- Auth.js v5 / NextAuth beta
+- JWT session strategy
+- Prisma 7
+- PostgreSQL
+- TanStack Query
+- React Hook Form
+- Zod
+- Tailwind CSS 4
+- Framer Motion
+- Recharts
+- Lucide React
 
-## Evidências observadas
+## Project Structure
 
-- estrutura analisada a partir dos arquivos públicos do repositório.
+```txt
+app/
+  api/
+    auth/
+    health/
+    payment-keys/
+    payments/
+    transactions/
+    users/
+  dashboard/page.tsx
+  login/page.tsx
+  payment-keys/page.tsx
+  register/page.tsx
+  transactions/page.tsx
+components/
+hooks/
+lib/
+  api-types.ts
+  ledger.ts
+  prisma.ts
+  receipt.ts
+prisma/
+  schema.prisma
+auth.ts
+next-auth.d.ts
+```
 
-## Operação
+## Environment
 
-Antes de rodar em produção, revise variáveis de ambiente, migrações, credenciais, build e políticas de deploy. O repositório deve ser tratado como produto técnico auditável: dependências explícitas, scripts reproduzíveis e logs suficientes para investigar erro real.
+Create `.env.local` in the repository root:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
+AUTH_SECRET="generate-a-long-random-secret"
+AUTH_URL="http://localhost:3000"
+NEXT_PUBLIC_GITHUB_URL="https://github.com/emanuelVINI01"
+```
+
+For Vercel, set the same variables in the project dashboard. `AUTH_SECRET` must be a long random value. You can generate one with:
+
+```bash
+openssl rand -base64 32
+```
+
+## Running Locally
+
+```bash
+npm install
+npm run prisma:push
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+## Scripts
+
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+npm run prisma:generate
+npm run prisma:push
+npm run prisma:studio
+```
+
+`npm run build` runs `prisma generate` before `next build`, which keeps Vercel builds aligned with the Prisma schema.
+
+## Local API Surface
+
+- `GET /api/health`
+- `POST /api/auth/register`
+- `GET|POST /api/auth/[...nextauth]`
+- `GET /api/users/me`
+- `GET /api/users/transactions`
+- `GET /api/payment-keys`
+- `POST /api/payment-keys`
+- `GET /api/payment-keys/:key`
+- `DELETE /api/payment-keys/:key`
+- `POST /api/payments`
+- `GET /api/transactions/:id/receipt`
+
+The frontend hooks call these local routes directly with `fetch("/api/...")`; there is no external API base URL or browser-stored bearer token.
+
+## Data Model
+
+- `User` stores identity, hashed password, tax ID and balance.
+- `PaymentKey` stores receivable UUID keys owned by users.
+- `Transaction` stores debit and credit rows with shared references, payer, receiver, amount, description and timestamp.
+
+New demo users start with a default balance so transfer flows can be tested immediately.
+
+## Deployment Notes
+
+Deploy the repository root on Vercel:
+
+- Framework Preset: `Next.js`
+- Build Command: `npm run build`
+- Install Command: `npm install`
+- Output Directory: `.next`
+
+Use a hosted PostgreSQL database and set `DATABASE_URL`, `AUTH_SECRET`, `AUTH_URL` and `NEXT_PUBLIC_GITHUB_URL` in Vercel.
+
+## License
+
+No open-source license is declared yet.
